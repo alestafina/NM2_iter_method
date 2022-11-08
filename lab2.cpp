@@ -3,9 +3,9 @@
 int main() {
    matrix A;
    int count = 100000;
-   double optimalW = 1.0;
+   double optimalW = 1.66;
    A.input_matrix();
-   A.Jacobi(optimalW);
+   A.Seidel(optimalW);
    //for (int i = 1; i <= 100; i++) {
    //   if (count > A.k) {
    //      count = A.k;
