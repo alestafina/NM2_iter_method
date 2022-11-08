@@ -20,8 +20,8 @@ struct matrix {
    double norm = 0.0;                    // Норма вектора правой части
    void input_matrix();                  // Ввод матрицы
    void input_vector();                  // Ввод вектора
-   void iter_step(vector<double> &x0, vector<double> &x1, double w); // Итерационный шаг
-   void Seidel(double w);                // Метод Гаусса-Зейделя
-   void Jacobi(double w);                // Метод Якоби
+   void iter_step(vector<double> &x0, vector<double> &x1, double omega); // Итерационный шаг
+   void Seidel(double omega);                // Метод Гаусса-Зейделя
+   void Jacobi(double omega);                // Метод Якоби
    void output();                        // Вывод
 };

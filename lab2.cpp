@@ -3,7 +3,7 @@
 int main() {
    matrix A;
    int count = 100000;
-   double optimalW = 1.66;
+   double optimalW = 1.5;
    A.input_matrix();
    A.Seidel(optimalW);
    //for (int i = 1; i <= 100; i++) {
@@ -14,6 +14,6 @@ int main() {
    //   //cout << "w = " << i / 100.0 << " Ready! residual = " << A.residual << " by " << A.k << " iterations" << endl;
    //}
    A.output();
-   cout << "Optimal w = " << optimalW << " by " << count << " iterations";
+   //cout << "Optimal w = " << optimalW << " by " << count << " iterations";
    return 0;
 }

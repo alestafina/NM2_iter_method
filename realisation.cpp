@@ -44,7 +44,7 @@ void matrix::input_vector() {
    fin.close();
 }
 
-void matrix::iter_step(vector<double> &x0, vector<double> &x1, double w) {
+void matrix::iter_step(vector<double> &x0, vector<double> &x1, double omega) {
    double sum = 0.0;
    int tmp = 0;
    vector<int> idx = { M + 3, M + 2, 1, 0, -1, -M - 2, -M - 3 };
@@ -58,24 +58,26 @@ void matrix::iter_step(vector<double> &x0, vector<double> &x1, double w) {
          sum += A[j][i] * x0[i + idx[j]];
          ++j;
       }
-      x1[i] = x0[i] + w * (b[i] - sum) / A[3][i];
+      x1[i] = x0[i] + omega * (b[i] - sum) / A[3][i];
       residual += (b[i] - sum) * (b[i] - sum);
    }
    residual = sqrt(residual) / norm;
 }
 
-void matrix::Jacobi(double w) {
+void matrix::Jacobi(double omega) {
    input_vector();
    residual = 1.0;
-   for (k = 0; k < maxiter && residual > eps; k++)
-      iter_step(x_prev, x_next, w);
+   for (k = 0; k < maxiter && residual > eps; k++) {
+      iter_step(x_prev, x_next, omega);
+      swap(x_prev, x_next);
+   }
 }
 
-void matrix::Seidel(double w) {
+void matrix::Seidel(double omega) {
    input_vector();
    residual = 10.0;
    for (k = 0; k < maxiter && residual > eps; k++)
-      iter_step(x_next, x_next, w);
+      iter_step(x_next, x_next, omega);
 
 }
 
