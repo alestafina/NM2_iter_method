@@ -1,5 +1,7 @@
 #include "lab2.h"
 
+ofstream fout("output.csv");
+
 void matrix::input_matrix() {
    double tmp = 0;
 
@@ -30,6 +32,13 @@ void matrix::input_matrix() {
       norm += b[i] * b[i];
    }
    norm = sqrt(norm);
+
+   for (int i = 0; i < N; i++) {
+      fin >> tmp;
+      x_prev.push_back(tmp);
+      x_next.push_back(tmp);
+   }
+
    fin.close();
 }
 
@@ -38,13 +47,13 @@ void matrix::input_vector() {
    double tmp = 0;
    for (int i = 0; i < N; i++) {
       fin >> tmp;
-      x_prev.push_back(tmp);
-      x_next.push_back(x_prev[i]);
+      x_prev[i] = tmp;
+      x_next[i] = tmp;
    }
    fin.close();
 }
 
-void matrix::iter_step(vector<double> &x0, vector<double> &x1, double omega) {
+void matrix::iter_step(vector<double> &x0, vector<double> &x1, double w) {
    double sum = 0.0;
    int tmp = 0;
    vector<int> idx = { M + 3, M + 2, 1, 0, -1, -M - 2, -M - 3 };
@@ -58,41 +67,39 @@ void matrix::iter_step(vector<double> &x0, vector<double> &x1, double omega) {
          sum += A[j][i] * x0[i + idx[j]];
          ++j;
       }
-      x1[i] = x0[i] + omega * (b[i] - sum) / A[3][i];
+      x1[i] = x0[i] + w * (b[i] - sum) / A[3][i];
       residual += (b[i] - sum) * (b[i] - sum);
    }
    residual = sqrt(residual) / norm;
 }
 
 void matrix::Jacobi(double omega) {
+   w = omega;
    input_vector();
    residual = 1.0;
    for (k = 0; k < maxiter && residual > eps; k++) {
-      iter_step(x_prev, x_next, omega);
+      iter_step(x_prev, x_next, w);
       swap(x_prev, x_next);
    }
 }
 
 void matrix::Seidel(double omega) {
+   w = omega;
    input_vector();
    residual = 10.0;
    for (k = 0; k < maxiter && residual > eps; k++)
-      iter_step(x_next, x_next, omega);
+      iter_step(x_next, x_next, w);
 
 }
 
 void matrix::output() {
-   ofstream fout("output.txt");
+   fout.imbue(locale("Russian"));
    fout.precision(3);
-   fout << w << ";" << endl;
+   fout << w << ";";
    fout.precision(15);
+   fout << x_next[0] << ";" << 1.0 - x_next[0] << ";";
    fout << k << ";" << endl;
-   for (int i = 0; i < N; i++) {
-      fout << x_next[i] << endl;
-   }
-  /* fout << x_next[0] << "; " << 1.0 - x_next[0] << ";" << endl;
    for (int i = 1; i < N - 1; i++)
-      fout << x_next[i] << ";" << (i + 1) * 1.0 - x_next[i] << ";" << endl;
-   fout << x_next[N - 1] << ";" << N * 1.0 - x_next[N - 1] << ";" << endl << residual << ";" << endl;*/
-
+      fout << " ;" << x_next[i] << ";" << (i + 1) * 1.0 - x_next[i] << ";" << endl;
+   fout << " ;" << x_next[N - 1] << ";" << N * 1.0 - x_next[N - 1] << ";" << residual << ";" << endl;
 }
